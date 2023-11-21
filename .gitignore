@@ -1,0 +1,6 @@
+node_modules
+*.http
+*.session.sql
+pnpm-lock.yaml
+.env
+.vscode
