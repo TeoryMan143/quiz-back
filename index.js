@@ -2,6 +2,7 @@ import express from 'express';
 import sql from './db.js';
 import cors from 'cors';
 import 'dotenv/config';
+import { isUUID } from './utils.js';
 
 const app = express();
 
@@ -19,7 +20,22 @@ app.get('/products', async (req, res) => {
 
 app.get('/product/:id', async (req, res) => {
   const { id } = req.params;
+
+  if (!isUUID(id)) {
+    res.status(404).json({
+      error: 'Invalid id',
+    });
+    return;
+  }
+
   const query = await sql`SELECT * FROM product WHERE id = ${id}`;
+
+  if (query.length == 0) {
+    res.status(404).json({
+      error: 'Invalid id',
+    });
+  }
+
   res.json(query);
 });
 
@@ -34,6 +50,13 @@ app.post('/product', async (req, res) => {
 
 app.delete('/product/:id', async (req, res) => {
   const { id } = req.params;
+
+  if (!isUUID(id)) {
+    res.status(404).json({
+      error: 'Invalid id',
+    });
+    return;
+  }
 
   const query = await sql`DELETE FROM product WHERE id = ${id}`;
 
