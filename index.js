@@ -71,7 +71,6 @@ app.patch('/product/:id', async (req, res) => {
 
   if (product.amount && product.price) {
     const total_price = product.amount * product.price;
-
     newProductInfo = { ...product, total_price };
   } else if (product.amount) {
     const query = await sql`SELECT * FROM product WHERE id = ${id}`;
@@ -83,6 +82,8 @@ app.patch('/product/:id', async (req, res) => {
     const foundProduct = query[0];
     const total_price = product.price * foundProduct.amount;
     newProductInfo = { ...product, total_price };
+  } else {
+    newProductInfo = product;
   }
 
   const query = await sql`UPDATE product SET ${sql(
